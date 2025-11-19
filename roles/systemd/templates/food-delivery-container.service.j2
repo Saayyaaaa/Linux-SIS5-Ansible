@@ -1,0 +1,14 @@
+[Unit]
+Description=Food Delivery Docker Container
+After=network.target docker.service
+Requires=docker.service
+
+[Service]
+Restart=always
+RestartSec=5
+ExecStart=/usr/bin/docker run --name food-delivery -p 8080:8080 {{ docker_image }}
+ExecStop=/usr/bin/docker stop food-delivery
+ExecStopPost=/usr/bin/docker rm food-delivery
+
+[Install]
+WantedBy=multi-user.target

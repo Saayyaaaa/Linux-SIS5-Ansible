@@ -1,0 +1,17 @@
+---
+- name: Setup Food Delivery project (SIS 2, 3, 4)
+  hosts: food
+  become: yes
+
+  vars:
+    app_user: foodapp
+    app_group: foodapp
+    docker_image: "amangeldinovaas/food-delivery:1.0"
+    backup_dir: "/home/saya/menu-backups"
+
+  roles:
+    - users
+    - packages
+    - docker_app
+    - systemd
+    - cron

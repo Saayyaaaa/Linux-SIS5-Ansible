@@ -1,0 +1,44 @@
+---
+- name: Create groups
+  ansible.builtin.group:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - admin
+    - bots
+    - services
+    - users
+
+- name: Create admin user
+  ansible.builtin.user:
+    name: admin1
+    group: admin
+    create_home: yes
+    shell: /bin/bash
+
+- name: Create automation bot user
+  ansible.builtin.user:
+    name: auto_bot
+    group: bots
+    create_home: yes
+    shell: /bin/bash
+
+- name: Create service user for app
+  ansible.builtin.user:
+    name: "{{ app_user }}"
+    group: services
+    create_home: no
+    system: yes
+    shell: /usr/sbin/nologin
+
+- name: Give sudo for admin
+  ansible.builtin.copy:
+    dest: /etc/sudoers.d/admin1
+    content: "admin1 ALL=(ALL) NOPASSWD:ALL\n"
+    mode: "0440"
+
+- name: Allow auto_bot to manage food-delivery service
+  ansible.builtin.copy:
+    dest: /etc/sudoers.d/auto_bot_food_delivery
+    content: "auto_bot ALL=(root) NOPASSWD:/usr/bin/systemctl start food-delivery-container.service, /usr/bin/systemctl stop food-delivery-container.service, /usr/bin/systemctl restart food-delivery-container.service\n"
+    mode: "0440"

@@ -1,0 +1,20 @@
+---
+- name: Deploy systemd unit for food-delivery container
+  ansible.builtin.template:
+    src: food-delivery-container.service.j2
+    dest: /etc/systemd/system/food-delivery-container.service
+    mode: "0644"
+
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: yes
+
+- name: Enable food-delivery-container service
+  ansible.builtin.service:
+    name: food-delivery-container.service
+    enabled: yes
+
+- name: Start food-delivery-container service
+  ansible.builtin.service:
+    name: food-delivery-container.service
+    state: started

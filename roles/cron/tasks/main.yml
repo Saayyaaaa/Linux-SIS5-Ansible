@@ -1,0 +1,26 @@
+---
+- name: Deploy check-container script
+  ansible.builtin.template:
+    src: check-container.sh.j2
+    dest: /usr/local/bin/check-container.sh
+    mode: "0755"
+
+- name: Deploy backup-menu script
+  ansible.builtin.template:
+    src: backup-menu.sh.j2
+    dest: /usr/local/bin/backup-menu.sh
+    mode: "0755"
+
+- name: Configure cron job for container check (every 5 minutes)
+  ansible.builtin.cron:
+    name: "check food-delivery container"
+    user: root
+    minute: "*/5"
+    job: "/usr/local/bin/check-container.sh"
+
+- name: Configure cron job for menu backup (every 10 minutes)
+  ansible.builtin.cron:
+    name: "backup food-delivery menu"
+    user: root
+    minute: "*/10"
+    job: "/usr/local/bin/backup-menu.sh"
