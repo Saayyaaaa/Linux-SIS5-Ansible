@@ -5,12 +5,11 @@
     cache_valid_time: 3600
 
 - name: Install required packages
-  ansible.builtin.apt:
+  apt:
     name:
       - openjdk-21-jdk
       - docker.io
     state: present
-    update_cache: yes
 
 - name: Ensure docker service is enabled and running
   ansible.builtin.service:
