@@ -9,9 +9,8 @@
     name:
       - openjdk-21-jdk
       - docker.io
-      - curl
-      - cron
     state: present
+    update_cache: yes
 
 - name: Ensure docker service is enabled and running
   ansible.builtin.service:
