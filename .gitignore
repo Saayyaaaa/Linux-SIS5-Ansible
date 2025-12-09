@@ -6,3 +6,10 @@ externals/
 # Всякое мусорное
 _pycache_/
 *.pyc
+# Ignore GitHub runner leftovers
+_work/
+_diag/
+externals/
+bin/
+actions-runner/
+*.tar.gz
