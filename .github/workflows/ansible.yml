@@ -1,24 +1,22 @@
-name: Run Ansible Playbook
+name: Run Ansible playbook on VM
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:   # запуск руками из GitHub
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted   # наш self-hosted runner на ВМ
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up SSH
+      - name: Show files (debug)
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
+          pwd
+          ls -l
 
-          # Disable strict host checking
-          echo -e "Host *\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
-
-      - name: Run Ansible Playbook
-        run: ansible-playbook -i inventory site.yml
+      - name: Run Ansible playbook
+        run: |
+          cd $GITHUB_WORKSPACE
+          ansible-playbook -i inventory.ini site.yml
