@@ -1,0 +1,8 @@
+# Не версионируем GitHub Actions runner и большие бинарники
+actions-runner/
+externals/
+*.tar.gz
+
+# Всякое мусорное
+_pycache_/
+*.pyc

@@ -1,0 +1,2 @@
+[food]
+localhost ansible_connection=local

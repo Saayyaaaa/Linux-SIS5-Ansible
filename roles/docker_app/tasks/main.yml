@@ -1,0 +1,13 @@
+---
+- name: Ensure Docker image for food-delivery is pulled
+  community.docker.docker_image:
+    name: "amangeldinovaas/food-delivery:1.0"
+    source: pull
+
+- name: Ensure food-delivery container is running
+  community.docker.docker_container:
+    name: food-delivery
+    image: "amangeldinovaas/food-delivery:1.0"
+    restart_policy: always
+    published_ports:
+      - "8080:8080"

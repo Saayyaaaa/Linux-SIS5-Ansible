@@ -1,0 +1,11 @@
+﻿{
+  "agentId": 21,
+  "agentName": "saya-VirtualBox",
+  "poolId": 1,
+  "poolName": "Default",
+  "serverUrl": "https://pipelinesghubeus6.actions.githubusercontent.com/js5p0STc4RtT27Ng3fZLyFyj3Ga0s0m1zBBqa2P6E24s6EZmc0/",
+  "gitHubUrl": "https://github.com/Saayyaaaa/Linux-SIS5-Ansible",
+  "workFolder": "_work",
+  "useV2Flow": true,
+  "serverUrlV2": "https://broker.actions.githubusercontent.com/"
+}

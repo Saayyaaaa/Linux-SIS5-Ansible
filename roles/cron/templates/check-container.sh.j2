@@ -1,0 +1,10 @@
+#!/bin/bash
+LOG_FILE="/var/log/container-check.log"
+DATE="$(date)"
+
+if /usr/bin/docker ps --format '{{"{{.Names}}"}}' | grep -q '^food-delivery$'; then
+  echo "$DATE: Container running OK" >> "$LOG_FILE"
+else
+  echo "$DATE: Container NOT running, trying to start" >> "$LOG_FILE"
+  /usr/bin/systemctl start food-delivery-container.service
+fi

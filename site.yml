@@ -1,0 +1,91 @@
+---
+- hosts: food_vm
+  become: yes
+
+  vars:
+    groups_to_create:
+      - admin
+      - auditor
+      - automation_bot
+      - webapp
+
+    users_to_create:
+      - { name: "admin1", group: "admin",         shell: "/bin/bash",        system: "no" }
+      - { name: "auditor1", group: "auditor",     shell: "/bin/bash",        system: "no" }
+      - { name: "automation", group: "automation_bot", shell: "/bin/bash",   system: "no" }
+      - { name: "webapp", group: "webapp",        shell: "/usr/sbin/nologin", system: "yes" }
+
+  tasks:
+
+  - name: Ensure groups exist (SIS 2)
+    group:
+      name: "{{ item }}"
+      state: present
+    loop: "{{ groups_to_create }}"
+
+  - name: Ensure users exist (SIS 2)
+    user:
+      name: "{{ item.name }}"
+      group: "{{ item.group }}"
+      shell: "{{ item.shell }}"
+      system: "{{ item.system }}"
+      create_home: yes
+      state: present
+    loop: "{{ users_to_create }}"
+
+  - name: Create application directory (SIS 3)
+    file:
+      path: /opt/foodapp
+      state: directory
+      owner: webapp
+      group: webapp
+      mode: '0750'
+
+  - name: Install required packages (SIS 3)
+    apt:
+      name:
+        - python3
+        - python3-pip
+        - nginx
+        - postgresql
+        - docker.io
+        - ufw
+      state: present
+      update_cache: yes
+
+  - name: Configure sudo for admin1 (SIS 3)
+    copy:
+      dest: /etc/sudoers.d/admin1
+      content: "admin1 ALL=(ALL) ALL\n"
+      mode: '0440'
+
+  - name: Configure sudo for automation (SIS 3)
+    copy:
+      dest: /etc/sudoers.d/automation
+      content: "automation ALL=NOPASSWD: /usr/bin/systemctl restart foodapp.service\n"
+      mode: '0440'
+
+  - name: Allow SSH, HTTP, HTTPS in UFW (SIS 3)
+    ufw:
+      rule: allow
+      port: "{{ item }}"
+      proto: tcp
+    loop:
+      - 22
+      - 80
+      - 443
+
+  - name: Enable UFW (SIS 3)
+    ufw:
+      state: enabled
+
+  - name: Setup authorized_keys for automation (SIS 4)
+    authorized_key:
+      user: automation
+      state: present
+      key: "{{ lookup('file', 'files/automation_id_rsa.pub') }}"
+  - name: Ensure foodapp service is enabled and running (SIS 5)
+    systemd:
+        name: foodapp
+        state: started
+        enabled: yes
