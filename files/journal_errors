@@ -1,0 +1,3 @@
+#!/bin/bash
+# Show only error-level logs from current boot
+journalctl -p err -b
